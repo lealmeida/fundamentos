@@ -1,0 +1,7 @@
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      #uri: http://localhost:27017/bovesp
+      database: bovespa
