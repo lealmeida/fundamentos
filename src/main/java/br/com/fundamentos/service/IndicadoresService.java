@@ -13,14 +13,22 @@ public class IndicadoresService {
 
 	@Autowired
 	private IndicadoresRepository fundamentosRepository;
+	
+	@Autowired
+	private CotacaoService cotacaoService;
 
 	public JSONObject consultaUltimoRoe(String codigoCvm) {
 		JSONObject response = new JSONObject();
+		double roe = roe(codigoCvm);
+		response.appendField("roe", new DecimalFormat("##.##").format(roe));
+		return response;
+	}
+
+	private double roe(String codigoCvm) {
 		double lucroLiquido = fundamentosRepository.consultaUltimoLucroLiquido( "consolidado", codigoCvm);
 		double patrimonioLiquido = fundamentosRepository.consultaUltimoPatrimonioLiquido( "consolidado", codigoCvm);
 		double roe = margemLiquida(lucroLiquido, patrimonioLiquido);
-		response.appendField("roe", new DecimalFormat("##.##").format(roe));
-		return response;
+		return roe;
 	}
 	
 	public JSONObject consultaUltimaMargemLiquida(String codigoCvm) {
@@ -65,8 +73,16 @@ public class IndicadoresService {
 	}
 
 	public JSONObject consultaIndicadores(String codigoCvm) {
-		// TODO Auto-generated method stub
-		return null;
+		JSONObject roe = consultaUltimoRoe(codigoCvm);
+		JSONObject margemLiquida = consultaUltimaMargemLiquida(codigoCvm);
+		JSONObject margemBruta = consultaUltimaMargemBruta(codigoCvm);
+		JSONObject response = new JSONObject();
+		response.merge(roe);
+		response.merge(margemLiquida);
+		response.merge(margemBruta);
+		response.appendField("cotacao", cotacaoService.cotacao());
+		
+		return response;
 	}
 
 }

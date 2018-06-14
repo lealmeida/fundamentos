@@ -44,6 +44,12 @@ public class IndicadoresController {
 		JSONObject response = fundamentosService.consultaUltimaMargemBruta(codigoCvm);
 		return response; 
 	}
+	
+	@RequestMapping( value = { "/cotacao" }, params={ "codigoCvm" }, method = RequestMethod.GET, produces = "application/json" )
+	public JSONObject consultaCotacao( @RequestParam("codigoCvm") String codigoCvm ) {
+		JSONObject response = fundamentosService.consultaIndicadores(codigoCvm);
+		return response; 
+	}
 
 
 }
